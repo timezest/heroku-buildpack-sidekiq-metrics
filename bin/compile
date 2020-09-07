@@ -5,8 +5,6 @@ arrow() {
 }
 
 BUILD_DIR=${1:-}
-#CACHE_DIR=${2:-}
-#ENV_DIR=${3:-}
 
 arrow 'Setting up .profile.d to automatically run sidekiq-metrics agent...'
 mkdir -p "${BUILD_DIR}/.profile.d"
