@@ -11,6 +11,16 @@ queues = Sidekiq::Queue.all
 exit 0 if queues.empty?
 
 # Example:
+#   sample#sidekiq.processed=123 sample#sidekiq.dead=0 sample#sidekiq.failed=0 sample#sidekiq.pending-retry=0 sample#sidekiq.workers=0
+stats = Sidekiq::Stats.new
+puts \
+  "#{TYPE}#sidekiq.processed=#{stats.processed} " \
+  "#{TYPE}#sidekiq.dead=#{stats.dead_size} " \
+  "#{TYPE}#sidekiq.failed=#{stats.failed} " \
+  "#{TYPE}#sidekiq.pending-retry=#{stats.retry_size} " \
+  "#{TYPE}#sidekiq.workers=#{stats.workers_size}"
+
+# Example:
 #   source=default sample#sidekiq.queue.size=42 sample#sidekiq.queue.latency=1
 #   source=critical sample#sidekiq.queue.size=2 sample#sidekiq.queue.latency=0
 queues.each do |q|
