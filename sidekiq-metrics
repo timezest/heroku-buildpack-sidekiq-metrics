@@ -16,3 +16,17 @@ exit 0 if queues.empty?
 queues.each do |q|
   puts "source=#{q.name} #{TYPE}#sidekiq.queue.size=#{q.size} #{TYPE}#sidekiq.queue.latency=#{q.latency}"
 end
+
+# Example:
+#   source=FooWorker sample#sidekiq.job.enqueued=2
+#   source=BarWorker sample#sidekiq.job.enqueued=9
+job_counts_by_klass = {}
+queues.each do |q|
+  q.each do |job|
+    job_counts_by_klass[job.klass] = 0 unless job_counts_by_klass.key?(job.klass)
+    job_counts_by_klass[job.klass] += 1
+  end
+end
+job_counts_by_klass.each do |klass, count|
+  puts "source=#{klass} #{TYPE}#sidekiq.job.enqueued=#{count}"
+end
