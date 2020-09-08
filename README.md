@@ -40,7 +40,7 @@ source=mailer sample#sidekiq.queue.size=3 sample#sidekiq.queue.latency=0
 ## Configure from CLI
 
 ```
-$ heroku buildpacks:add https://github.com/feedforce/heroku-buildpack-sidekiq-metrics.git
+$ heroku buildpacks:add https://github.com/jasonrudolph/heroku-buildpack-sidekiq-metrics.git
 ```
 
 ## Configure from app manifest
@@ -49,7 +49,7 @@ $ heroku buildpacks:add https://github.com/feedforce/heroku-buildpack-sidekiq-me
 {
   "buildpacks": [
     {
-      "url": "https://github.com/feedforce/heroku-buildpack-sidekiq-metrics.git"
+      "url": "https://github.com/jasonrudolph/heroku-buildpack-sidekiq-metrics.git"
     }
   ]
 }
