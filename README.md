@@ -17,8 +17,8 @@ The `.profile.d/ruby-sidekiq-metrics.sh` script starts the `sidekiq-metrics` scr
 The `sidekiq-metrics` script is called every `30` seconds and outputs the following log to stdout that is compatible with [Librato Custom log-based metrics](https://devcenter.heroku.com/articles/librato#custom-log-based-metrics):
 
 ```
-sample#sidekiq.default.size=0 sample#sidekiq.mailer.size=0
-sample#sidekiq.default.latency=0 sample#sidekiq.mailer.latency=0
+source=default sample#sidekiq.queue.size=42 sample#sidekiq.queue.latency=1
+source=mailer sample#sidekiq.queue.size=3 sample#sidekiq.queue.latency=0
 ```
 
 ## Requirements

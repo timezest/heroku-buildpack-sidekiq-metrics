@@ -10,8 +10,7 @@ queues = Sidekiq::Queue.all
 
 exit 0 if queues.empty?
 
-# e.g. sample#sidekiq.default.size=0 sample#sidekiq.mailer.size=0
-puts queues.map { |q| "#{TYPE}#sidekiq.#{q.name}.size=#{q.size}" }.join(' ')
-
-# e.g. sample#sidekiq.default.latency=0 sample#sidekiq.mailer.latency=0
-puts queues.map { |q| "#{TYPE}#sidekiq.#{q.name}.latency=#{q.latency}" }.join(' ')
+# e.g. source=default sample#sidekiq.queue.size=42 sample#sidekiq.queue.latency=1
+queues.each do |q|
+  puts "source=#{q.name} #{TYPE}#sidekiq.queue.size=#{q.size} #{TYPE}#sidekiq.queue.latency=#{q.latency}"
+end
