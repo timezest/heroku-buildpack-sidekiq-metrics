@@ -6,6 +6,10 @@ require 'sidekiq/api'
 
 TYPE = ARGV[0]
 
+Sidekiq.configure_client do |config|
+  config.redis = { ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE } }
+end
+
 queues = Sidekiq::Queue.all
 
 exit 0 if queues.empty?
