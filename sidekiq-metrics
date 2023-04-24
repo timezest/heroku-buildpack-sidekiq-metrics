@@ -4,10 +4,14 @@
 require 'bundler/setup'
 require 'sidekiq/api'
 
-TYPE = ARGV[0]
+THRESHOLD = Integer(ARGV.fetch(0, 0))
 
 Sidekiq.configure_client do |config|
-  config.redis = { ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE } }
+  config.redis = {
+    logger: nil,
+    path: ENV.fetch('REDIS_PATH', nil),
+    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+  }
 end
 
 queues = Sidekiq::Queue.all
@@ -15,32 +19,8 @@ queues = Sidekiq::Queue.all
 exit 0 if queues.empty?
 
 # Example:
-#   sample#sidekiq.processed=123 sample#sidekiq.dead=0 sample#sidekiq.failed=0 sample#sidekiq.pending-retry=0 sample#sidekiq.workers=0
-stats = Sidekiq::Stats.new
-puts \
-  "#{TYPE}#sidekiq.processed=#{stats.processed} " \
-  "#{TYPE}#sidekiq.dead=#{stats.dead_size} " \
-  "#{TYPE}#sidekiq.failed=#{stats.failed} " \
-  "#{TYPE}#sidekiq.pending-retry=#{stats.retry_size} " \
-  "#{TYPE}#sidekiq.workers=#{stats.workers_size}"
-
-# Example:
 #   source=default sample#sidekiq.queue.size=42 sample#sidekiq.queue.latency=1
 #   source=critical sample#sidekiq.queue.size=2 sample#sidekiq.queue.latency=0
-queues.each do |q|
-  puts "source=#{q.name} #{TYPE}#sidekiq.queue.size=#{q.size} #{TYPE}#sidekiq.queue.latency=#{q.latency}"
-end
-
-# Example:
-#   source=FooWorker sample#sidekiq.job.enqueued=2
-#   source=BarWorker sample#sidekiq.job.enqueued=9
-job_counts_by_klass = {}
-queues.each do |q|
-  q.each do |job|
-    job_counts_by_klass[job.klass] = 0 unless job_counts_by_klass.key?(job.klass)
-    job_counts_by_klass[job.klass] += 1
-  end
-end
-job_counts_by_klass.each do |klass, count|
-  puts "source=#{klass} #{TYPE}#sidekiq.job.enqueued=#{count}"
+queues.select { |q| q.latency >= THRESHOLD }.each do |q|
+  puts "source=sidekiq queue=#{q.name} size=#{q.size} latency=#{q.latency}s"
 end

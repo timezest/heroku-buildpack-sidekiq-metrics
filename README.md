@@ -14,11 +14,11 @@ This buildpack does two things:
 
 The `.profile.d/ruby-sidekiq-metrics.sh` script starts the `sidekiq-metrics` script on `web.1` Dyno boot.
 
-The `sidekiq-metrics` script is called every `60` seconds and outputs the following log to stdout that is compatible with [Librato Custom log-based metrics](https://devcenter.heroku.com/articles/librato#custom-log-based-metrics):
+The `sidekiq-metrics` script is called every `30` seconds and outputs the following log to stdout:
 
 ```
-source=default sample#sidekiq.queue.size=42 sample#sidekiq.queue.latency=1
-source=mailer sample#sidekiq.queue.size=3 sample#sidekiq.queue.latency=0
+source=sidekiq queue=default size=3 latency=0
+source=sidekiq queue=low size=42 latency=1
 ```
 
 ## Requirements
@@ -31,16 +31,15 @@ source=mailer sample#sidekiq.queue.size=3 sample#sidekiq.queue.latency=0
 
 * `SIDEKIQ_METRICS_DYNO` (Default: `web.1`)
     * The Dyno name which the `sidekiq-metrics` script boot as daemon
-* `SIDEKIQ_METRICS_INTERVAL` (Default: `60`)
+* `SIDEKIQ_METRICS_INTERVAL` (Default: `30`)
     * Polling interval (seconds) which the `sidekiq-metrics` script is called
-* `SIDEKIQ_METRICS_TYPE` (Default: `sample`)
-    * You can set `sample` or `measure`. Although you can set `count`, it would not make sense for sidekiq metrics
-    * See also [Librato Custom log-based metrics](https://devcenter.heroku.com/articles/librato#custom-log-based-metrics)
+* `SIDEKIQ_METRICS_THRESHOLD` (Default: `30`)
+    * Latency interval (seconds) that causes script to print queue's size and latency to stdout
 
 ## Configure from CLI
 
 ```
-$ heroku buildpacks:add https://github.com/jasonrudolph/heroku-buildpack-sidekiq-metrics.git
+$ heroku buildpacks:add https://github.com/timezest/heroku-buildpack-sidekiq-metrics.git
 ```
 
 ## Configure from app manifest
@@ -49,7 +48,7 @@ $ heroku buildpacks:add https://github.com/jasonrudolph/heroku-buildpack-sidekiq
 {
   "buildpacks": [
     {
-      "url": "https://github.com/jasonrudolph/heroku-buildpack-sidekiq-metrics.git"
+      "url": "https://github.com/timezest/heroku-buildpack-sidekiq-metrics.git"
     }
   ]
 }
