@@ -17,8 +17,8 @@ The `.profile.d/ruby-sidekiq-metrics.sh` script starts the `sidekiq-metrics` scr
 The `sidekiq-metrics` script is called every `30` seconds and outputs the following log to stdout:
 
 ```
-source=sidekiq queue=default size=3 latency=0
-source=sidekiq queue=low size=42 latency=1
+source=sidekiq queue=default size=3 latency=0 threshold=below
+source=sidekiq queue=low size=42 latency=1 threshold=above
 ```
 
 ## Requirements
