@@ -34,7 +34,7 @@ source=sidekiq queue=low size=42 latency=1
 * `SIDEKIQ_METRICS_INTERVAL` (Default: `30`)
     * Polling interval (seconds) which the `sidekiq-metrics` script is called
 * `SIDEKIQ_METRICS_THRESHOLD` (Default: `30`)
-    * Latency interval (seconds) that causes script to print queue's size and latency to stdout
+    * Latency interval (seconds) that causes script to print whether threshold is exceeded or not
 
 ## Configure from CLI
 

@@ -19,8 +19,9 @@ queues = Sidekiq::Queue.all
 exit 0 if queues.empty?
 
 # Example:
-#   source=sidekiq queue=default size=42 latency=1s
-#   source=sidekiq queue=low size=2 latency=0s
-queues.select { |q| q.latency >= THRESHOLD }.each do |q|
-  puts "source=sidekiq queue=#{q.name} size=#{q.size} latency=#{q.latency}s"
+#   source=sidekiq queue=default size=42 latency=1s threshold=above
+#   source=sidekiq queue=low size=2 latency=0s threshold=below
+queues.each do |q|
+  threshold = q.latency >= THRESHOLD ? 'above' : 'below'
+  puts "source=sidekiq queue=#{q.name} size=#{q.size} latency=#{q.latency}s threshold=#{threshold}"
 end
