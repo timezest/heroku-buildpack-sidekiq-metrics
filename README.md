@@ -35,6 +35,7 @@ source=sidekiq queue=low size=42 latency=1 threshold=above
     * Polling interval (seconds) which the `sidekiq-metrics` script is called
 * `SIDEKIQ_METRICS_THRESHOLD` (Default: `30`)
     * Latency interval (seconds) that causes script to print whether threshold is exceeded or not
+    * Can be a global threshold for all queues or separate value per queue (e.g. `default:30,low:300` or `30,low:300`)
 
 ## Configure from CLI
 
