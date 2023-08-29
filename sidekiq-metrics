@@ -4,7 +4,17 @@
 require 'bundler/setup'
 require 'sidekiq/api'
 
-THRESHOLD = Integer(ARGV.fetch(0, 0))
+THRESHOLDS = ARGV
+  .fetch(0, '0')
+  .split(',')
+  .map { |t| t.split(':') }
+  .each_with_object({}) do |(k, v), acc|
+    if v.nil?
+      acc.default = Integer(k)
+    else
+      acc[k] = Integer(v)
+    end
+  end
 
 Sidekiq.configure_client do |config|
   config.redis = {
@@ -22,6 +32,6 @@ exit 0 if queues.empty?
 #   source=sidekiq queue=default size=42 latency=1s threshold=above
 #   source=sidekiq queue=low size=2 latency=0s threshold=below
 queues.each do |q|
-  threshold = q.latency >= THRESHOLD ? 'above' : 'below'
+  threshold = q.latency >= THRESHOLDS[q.name] ? 'above' : 'below'
   puts "source=sidekiq queue=#{q.name} size=#{q.size} latency=#{q.latency}s threshold=#{threshold}"
 end
